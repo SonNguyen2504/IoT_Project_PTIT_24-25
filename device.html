@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch sử thiết bị</title>
+  <link rel="stylesheet" href="./css/device.css">
+</head>
+
+<body>
+  <!-- Thanh navbar -->
+  <div class="navbar">
+    <h1>Quản lý nhà thông minh</h1>
+    <div class="nav-buttons">
+      <button id="homePage">Trang chủ</button>
+      <button id="airQualityBtn">Thống kê không khí</button>
+      <button id="information">Thông tin cá nhân</button>
+    </div>
+  </div>
+
+  <!-- Bộ lọc thời gian và tùy chọn sắp xếp -->
+  <div class="filter-find-container">
+    <!-- Bộ lọc thời gian -->
+    <div class="filter-container">
+      <label for="startDate">Từ ngày:</label>
+      <input type="date" id="startTime">
+      <label for="endDate">Đến ngày:</label>
+      <input type="date" id="endTime">
+      <button id="applyFilter">Lọc</button>
+    </div>
+
+    <!-- Sắp xếp -->
+    <div class="find-container">
+      <label for="findByDevice">Tìm kiếm theo:</label>
+      <select id="findByDevice">
+        <option value="none">Tất cả</option>
+        <option value="fan">Quạt</option>
+        <option value="airConditioner">Điều hòa</option>
+        <option value="LED">Đèn LED</option>
+      </select>
+      <button id="applyFind">Tìm kiếm</button>
+    </div>
+  </div>
+
+  <!-- Tiêu đề -->
+  <div class="header-title">
+    <h2>Lịch sử sử dụng thiết bị</h2>
+  </div>
+
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Số thứ tự</th>
+          <th>Tên thiết bị</th>
+          <th>Thời gian</th>
+          <th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="device-history"></tbody>
+    </table>
+    <div id="pagination" class="pagination">
+      <button id="prev-page" onclick="changePage(-1)">←</button>
+      <div id="page-numbers"></div>
+      <button id="next-page" onclick="changePage(1)">→</button>
+    </div>
+  </div>
+
+  <script src="./js/device.js"></script>
+</body>
+
+</html>

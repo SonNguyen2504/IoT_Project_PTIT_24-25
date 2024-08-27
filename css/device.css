@@ -1,0 +1,192 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* Thanh navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 20px 20px;
+    color: white;
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.navbar .nav-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 999px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.navbar .nav-buttons button:hover {
+    background-color: #45a049;
+}
+
+.navbar .nav-buttons button:active {
+    background-color: #3e8e41;
+}
+
+/* CSS for header title */
+.header-title {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.header-title h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+/* CSS for container and table */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* CSS cho khối lọc */
+.filter-find-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 20px;
+    /* Tăng độ dày của padding */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 70px;
+    /* Thêm chiều cao cho thanh chứa */
+}
+
+.filter-container,
+.find-container {
+    display: flex;
+    align-items: center;
+}
+
+.filter-container label,
+.find-container label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+    /* Tăng cỡ chữ */
+}
+
+.filter-container input,
+.find-container select {
+    padding: 8px;
+    /* Tăng padding để cân đối với cỡ chữ */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 16px;
+    /* Tăng cỡ chữ */
+}
+
+.filter-container input {
+    width: 180px;
+    /* Điều chỉnh lại kích thước để phù hợp với cỡ chữ */
+}
+
+.find-container select {
+    width: 220px;
+    /* Điều chỉnh lại kích thước để phù hợp với cỡ chữ */
+}
+
+#applyFilter {
+    padding: 8px 20px;
+    /* Tăng padding để cân đối với cỡ chữ */
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    /* Tăng cỡ chữ */
+    transition: background-color 0.3s;
+}
+
+#applyFind {
+    padding: 8px 20px;
+    /* Tăng padding để cân đối với cỡ chữ */
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    /* Tăng cỡ chữ */
+    transition: background-color 0.3s;
+}
+
+#applyFilter:hover {
+    background-color: #0056b3;
+}
+
+#applyFind:hover {
+    background-color: #0056b3;
+}

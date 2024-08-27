@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nhà thông minh</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <!-- Thanh navbar -->
+    <div class="navbar">
+        <h1>Quản lý nhà thông minh</h1>
+        <div class="nav-buttons">
+            <button id="airQualityBtn">Thống kê không khí</button>
+            <button id="deviceHistoryBtn">Lịch sử thiết bị</button>
+            <button id="information">Thông tin cá nhân</button>
+        </div>
+    </div>
+
+    <!-- Khối hiển thị chỉ số hiện tại -->
+    <div class="current-stats">
+        <div class="stat-item">
+            <h2>Nhiệt độ</h2>
+            <img id="temperatureIcon" src="./assets/images/default.png" alt="Temperature Icon">
+            <p id="currentTemperature">--°C</p>
+        </div>
+        <div class="stat-item">
+            <h2>Độ ẩm</h2>
+            <img id="humidityIcon" src="./assets/images/default.png" alt="Humidity Icon">
+            <p id="currentHumidity">--%</p>
+        </div>
+        <div class="stat-item">
+            <h2>Cường độ sáng</h2>
+            <img id="lightIcon" src="./assets/images/default.png" alt="Light Icon">
+            <p id="currentLightIntensity">-- lux</p>
+        </div>
+    </div>
+
+    <!-- Giao diện chính -->
+    <div class="main-content">
+        <div id="chartContainer">
+            <canvas id="sensorChart"></canvas>
+        </div>
+
+        <div id="deviceControl">
+            <div class="device">
+                <h3>Quạt điện</h3>
+                <img id = "fanIcon" src="./assets/images/fan-off.png" alt="điều hòa">
+                <button class="toggle-button" id="fanButton">Bật</button>
+            </div>
+            <div class="device">
+                <h3>Đèn LED</h3>
+                <img id = "ledIcon" src="./assets/images/bulb-off.png" alt="điều hòa">
+                <button class="toggle-button" id="ledButton">Bật</button>
+            </div>
+            <div class="device">
+                <h3>Điều hòa</h3>
+                <img id = "acIcon" src="./assets/images/ac-off.png" alt="điều hòa">
+                <button class="toggle-button" id="acButton">Bật</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+</html>

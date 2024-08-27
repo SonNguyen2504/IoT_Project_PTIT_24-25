@@ -1,0 +1,141 @@
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+}
+
+/* Thanh navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 20px 20px;
+    color: white;
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.navbar .nav-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 999px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.navbar .nav-buttons button:hover {
+    background-color: #45a049;
+}
+
+.navbar .nav-buttons button:active {
+    background-color: #3e8e41;
+}
+
+/* Khối hiển thị chỉ số hiện tại */
+.current-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+}
+
+.current-stats .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.current-stats .stat-item h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.current-stats .stat-item p {
+    margin: 5px 0 0;
+    font-size: 18px;
+    color: #555;
+}
+
+/* Biểu tượng */
+.stat-item img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+/* Giao diện chính */
+.main-content {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+#chartContainer {
+    width: 60%;
+    height: 70%;
+}
+
+#deviceControl {
+    width: 35%;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.device {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.device h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.device img {
+    width: 50px;
+    height: 50px;
+    margin-right: 250px;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.toggle-button.off {
+    background-color: #f44336;
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thống kê không khí</title>
+  <link rel="stylesheet" href="./css/statistical.css">
+</head>
+
+<body>
+  <!-- Thanh navbar -->
+  <div class="navbar">
+    <h1>Quản lý nhà thông minh</h1>
+    <div class="nav-buttons">
+      <button id="homePage">Trang chủ</button>
+      <button id="deviceHistoryBtn">Lịch sử thiết bị</button>
+      <button id="information">Thông tin cá nhân</button>
+    </div>
+  </div>
+
+  <!-- Bộ lọc thời gian và tùy chọn sắp xếp -->
+  <div class="filter-sort-container">
+    <!-- Bộ lọc thời gian -->
+    <div class="filter-container">
+      <label for="startDate">Từ ngày:</label>
+      <input type="date" id="startTime">
+      <label for="endDate">Đến ngày:</label>
+      <input type="date" id="endTime">
+      <button id="applyFilter">Lọc</button>
+    </div>
+
+    <!-- Sắp xếp -->
+    <div class="sort-container">
+      <label for="sortBy">Sắp xếp theo:</label>
+      <select id="sortBy">
+        <option value="none">Mặc định</option>
+        <option value="temperatureAsc">Nhiệt độ (Tăng dần)</option>
+        <option value="temperatureDesc">Nhiệt độ (Giảm dần)</option>
+        <option value="humidityAsc">Độ ẩm (Tăng dần)</option>
+        <option value="humidityDesc">Độ ẩm (Giảm dần)</option>
+        <option value="lightIntensityAsc">Cường độ sáng (Tăng dần)</option>
+        <option value="lightIntensityDesc">Cường độ sáng (Giảm dần)</option>
+      </select>
+      <button id="applySort">Sắp xếp</button>
+    </div>
+  </div>
+
+  <!-- Tiêu đề -->
+  <div class="header-title">
+    <h2>Thống kê số liệu không khí</h2>
+  </div>
+
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nhiệt độ (°C)</th>
+          <th>Độ ẩm (%)</th>
+          <th>Cường độ sáng (lux)</th>
+          <th>Thời gian</th>
+        </tr>
+      </thead>
+      <tbody id="air-quality-history"></tbody>
+    </table>
+    <div id="pagination" class="pagination">
+      <button id="prev-page" onclick="changePage(-1)">←</button>
+      <div id="page-numbers"></div>
+      <button id="next-page" onclick="changePage(1)">→</button>
+    </div>
+  </div>
+
+  <script src="./js/statistical.js"></script>
+</body>
+
+</html>
