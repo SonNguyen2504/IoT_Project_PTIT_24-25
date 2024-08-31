@@ -54,33 +54,63 @@ body {
     color: #333;
 }
 
-/* CSS for container and table */
+/* Container */
 .container {
     width: 80%;
-    margin: 0 auto;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Table */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 table th,
 table td {
-    padding: 12px;
-    border: 1px solid #ddd;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
     text-align: center;
+    font-size: 14px;
+    color: #333;
 }
 
 table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+
+table tr:hover {
+    background-color: #e9ecef;
+}
+
+table th:first-child,
+table td:first-child {
+    border-left: none;
+}
+
+table th:last-child,
+table td:last-child {
+    border-right: none;
+}
+
+
 
 .pagination {
     margin-top: 20px;

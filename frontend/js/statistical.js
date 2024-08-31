@@ -212,6 +212,33 @@ function sortData() {
     renderPage(0);
 }
 
+// Hàm search theo đúng thời gian nhập
+function searchData() {
+    const searchInput = document.getElementById('searchTime').value;
+
+    if(!searchInput) {
+        alert('Vui lòng nhập thời gian muốn tìm kiếm');
+    }
+
+    let data = [];
+
+    // console.log(searchTime.toISOString().slice(0, 19));
+    // console.log(searchTime);
+    // console.log(searchTime.toISOString();
+
+    data = airQualityHistory.filter((data) => {
+        const time = new Date(data.time).toISOString().slice(0, 19);
+        const searchTimeFormated = new Date(searchInput).toISOString().slice(0, 19);
+        return time === searchTimeFormated;
+    })
+
+    // console.log(data);
+
+    airQualityHistoryFiltered = data;
+
+    renderPage(0);
+}
+
 // Khởi tạo hiển thị trang đầu tiên
 renderPage(0);
 
@@ -220,6 +247,9 @@ document.getElementById('applyFilter').addEventListener('click', filterData);
 
 // sự kiến nút sắp xếp
 document.getElementById('applySort').addEventListener('click', sortData);
+
+// Sự kiện nút tìm kiếm theo thời gian
+document.getElementById('searchButton').addEventListener('click', searchData);
 
 // Sự kiện cho các nút navbar
 document.getElementById('homePage').addEventListener('click', function () {
