@@ -226,15 +226,16 @@ function searchData() {
     // console.log(searchTime);
     // console.log(searchTime.toISOString();
 
-    data = airQualityHistory.filter((data) => {
-        const time = new Date(data.time).toISOString().slice(0, 19);
+    data = airQualityHistory.find((item) => {
+        const time = new Date(item.time).toISOString().slice(0, 19);
         const searchTimeFormated = new Date(searchInput).toISOString().slice(0, 19);
         return time === searchTimeFormated;
     })
 
     // console.log(data);
 
-    airQualityHistoryFiltered = data;
+    // ép sang array nếu không thì không lưu được do khác type
+    airQualityHistoryFiltered = new Array(data); 
 
     renderPage(0);
 }
@@ -254,6 +255,10 @@ document.getElementById('searchButton').addEventListener('click', searchData);
 // Sự kiện cho các nút navbar
 document.getElementById('homePage').addEventListener('click', function () {
     window.location.href = 'index.html';
+});
+
+document.getElementById('airQualityBtn').addEventListener('click', function () {
+    window.location.href = 'statistical.html';
 });
 
 document.getElementById('deviceHistoryBtn').addEventListener('click', function () {

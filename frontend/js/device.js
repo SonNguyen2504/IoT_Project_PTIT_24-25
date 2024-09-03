@@ -45,8 +45,8 @@ function renderPage(pageNumber) {
         tr.innerHTML = `
                     <td>${pageNumber * itemsPerPage + index + 1}</td>
                     <td>${device.name}</td>
-                    <td>${new Date(device.time).toLocaleString('vi-VN')}</td>
                     <td>${device.status}</td>
+                    <td>${new Date(device.time).toLocaleString('vi-VN')}</td>
                 `;
         deviceHistoryTable.appendChild(tr);
     });
@@ -195,10 +195,31 @@ function filterDataByDevice() {
 
     deviceHistoryFiltered = foundData;
 
-    console.log(foundData, deviceHistoryFiltered, deviceHistory);
+    // console.log(foundData, deviceHistoryFiltered, deviceHistory);
 
     // render 
     renderPage(0);
+}
+
+function search() {
+    const searchInput = document.getElementById('searchTime').value;
+
+    if(!searchInput) {
+        alert('Vui lòng nhập thời gia muốn tìm kiếm');
+    }
+
+    let data = deviceHistory.find((item) => {
+        const time = new Date(item.time).toISOString().slice(0, 19);
+        const searchTimeFormated = new Date(searchInput).toISOString().slice(0, 19);
+        return time === searchTimeFormated;
+    })
+
+    deviceHistoryFiltered = new Array(data);
+
+    document.getElementById('findByDevice').value = 'none';
+
+    renderPage(0);
+
 }
 
 // Hiển thị trang đầu tiên
@@ -213,6 +234,10 @@ document.getElementById('airQualityBtn').addEventListener('click', function () {
     window.location.href = 'statistical.html';
 });
 
+document.getElementById('deviceHistoryBtn').addEventListener('click', () => {
+    window.location.href = 'device.html';
+})
+
 document.getElementById('information').addEventListener('click', () => {
     window.location.href = 'info.html';
 })
@@ -220,5 +245,8 @@ document.getElementById('information').addEventListener('click', () => {
 // Sự kiện Filter
 document.getElementById('applyFilter').addEventListener('click', filterDataByDay);
 
-// Sự kiện Search
+// Sự kiện tìm theo thiết bị
 document.getElementById('applyFind').addEventListener('click', filterDataByDevice);
+
+// Sự kiện search theo ngày
+document.getElementById('searchButton').addEventListener('click', search);

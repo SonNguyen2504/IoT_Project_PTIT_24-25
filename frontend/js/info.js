@@ -10,3 +10,7 @@ document.getElementById('airQualityBtn').addEventListener('click', () => {
 document.getElementById('deviceHistoryBtn').addEventListener('click', function () {
     window.location.href = 'device.html';
 });
+
+document.getElementById('information').addEventListener('click', () => {
+    window.location.href = 'info.html';
+})
