@@ -152,12 +152,6 @@ function updateChartData() {
 // Cập nhật dữ liệu mỗi 3 giây
 setInterval(updateChartData, 3000);
 
-// Xử lý sự kiện bật/tắt thiết bị
-function toggleDevice(button) {
-    const isOn = button.classList.toggle('off');
-    button.textContent = isOn ? 'Tắt' : 'Bật';
-}
-
 // cập nhật icon
 function toggleDevice(button, iconId, onImageSrc, offImageSrc) {
     const isOn = button.classList.toggle('off');
@@ -172,8 +166,23 @@ function toggleDevice(button, iconId, onImageSrc, offImageSrc) {
 }
 
 // Gán sự kiện cho các nút thiết bị
-document.getElementById('fanButton').addEventListener('click', function () {
-    toggleDevice(this, 'fanIcon', './assets/images/fan-on.gif', './assets/images/fan-off.png');
+// document.getElementById('fanButton').addEventListener('click', function () {
+//     toggleDevice(this, 'fanIcon', './assets/images/fan-on.gif', './assets/images/fan-off.png');
+// });
+
+document.getElementById('fanButton').addEventListener('click', function() {
+    var fanIcon = document.getElementById('fanIcon');
+    var button = this;
+
+    if (fanIcon.classList.contains('rotate')) {
+        fanIcon.classList.remove('rotate');
+        button.textContent = 'Bật';
+        button.classList.remove('off');
+    } else {
+        fanIcon.classList.add('rotate');
+        button.textContent = 'Tắt';
+        button.classList.add('off');
+    }
 });
 
 document.getElementById('ledButton').addEventListener('click', function () {
@@ -185,6 +194,9 @@ document.getElementById('acButton').addEventListener('click', function () {
 });
 
 // Sự kiện cho các nút navbar
+document.getElementById('homePage').addEventListener('click', function () {
+    window.location.href = 'index.html';
+});
 document.getElementById('airQualityBtn').addEventListener('click', function() {
     window.location.href = 'statistical.html'; 
 });
