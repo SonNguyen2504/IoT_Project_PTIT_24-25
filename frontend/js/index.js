@@ -1,3 +1,115 @@
+// Kết nối tới WebSocket server (chạy ở backend)
+const socket = new WebSocket('ws://localhost:3000');
+
+// Khi kết nối thành công
+socket.onopen = function () {
+    console.log('Connected to WebSocket server');
+};
+
+// Khi nhận được tin nhắn từ server
+socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);  // Dữ liệu từ MQTT broker qua backend
+    
+    if (data.temperature && data.humidity && data.lightIntensity) {
+        const currentTime = new Date().toLocaleTimeString();
+
+        const newTemperature = data.temperature;
+        const newHumidity = data.humidity;
+        const newLightIntensity = data.lightIntensity;
+
+        console.log(`Data updated: \n temperature: ${newTemperature}\n humidity: ${newHumidity}\n light intensity: ${newLightIntensity}\n time: ${currentTime}`);
+
+        // Thêm dữ liệu mới vào biểu đồ
+        sensorChart.data.labels.push(currentTime);
+        sensorChart.data.datasets[0].data.push(newLightIntensity);
+        sensorChart.data.datasets[1].data.push(newHumidity);
+        sensorChart.data.datasets[2].data.push(newTemperature);
+
+        // Giữ cho biểu đồ chỉ hiển thị 10 điểm dữ liệu gần nhất
+        if (sensorChart.data.labels.length > 10) {
+            sensorChart.data.labels.shift();
+            sensorChart.data.datasets.forEach(dataset => dataset.data.shift());
+        }
+
+        // Cập nhật nhiệt độ và độ ẩm lên giao diện
+        document.getElementById("currentTemperature").innerText = newTemperature + "°C";
+        document.getElementById("currentHumidity").innerText = newHumidity + "%";
+        document.getElementById("currentLightIntensity").innerText = newLightIntensity + "lux";
+
+        // Cập nhật biểu đồ
+        sensorChart.update();
+
+        // Thay đổi biểu tượng dựa trên giá trị
+        updateIcons(newTemperature, newHumidity, newLightIntensity);
+    }
+
+    // Xử lý cập nhật trạng thái thiết bị (quạt, đèn LED, điều hòa)
+    if (data.device && data.status) {
+        console.log(`Received device status:\n ${data.device}\n ${data.status}\n ${data.time.toLocaleString('vi-VN')}`);
+        updateDeviceStatus(data.device, data.status);
+    }
+};
+
+// Khi có lỗi xảy ra
+socket.onerror = function (error) {
+    console.log('WebSocket Error: ' + error);
+};
+
+function isOpen(ws) { return ws.readyState === ws.OPEN }
+
+// -----------------------------------------------------------
+// Gửi lệnh bật/tắt thiết bị tới WebSocket server
+function toggleDevice(device) {
+    const button = document.getElementById(`${device}Button`);
+    // console.log(button);
+    const action = button.textContent === "Bật" ? "ON" : "OFF";
+
+    const message = JSON.stringify({
+        device: device,
+        action: action
+    });
+
+    if (button.textContent === "Bật") {
+        button.textContent = "Tắt";
+        button.classList.add('off');
+    } else {
+        button.textContent = "Bật";
+        button.classList.remove('off');
+    }
+
+    console.log(`Sent control message: ${message}`);
+
+    if (!isOpen(socket)) return;
+    socket.send(message);  // Gửi lệnh qua WebSocket
+}
+
+// Cập nhật trạng thái thiết bị (thay đổi icon và nút)
+function updateDeviceStatus(device, status) {
+    const icon = document.getElementById(`${device}Icon`);
+    const button = document.getElementById(`${device}Button`);
+    // console.log(button);    
+
+    if (status === "ON") {
+        icon.src = `./assets/images/${device}-on.gif`;  // Ảnh động khi thiết bị bật
+    } else {
+        icon.src = `./assets/images/${device}-off.png`;  // Ảnh tĩnh khi thiết bị tắt
+    }
+}
+
+// Gán sự kiện cho các nút bật/tắt
+document.getElementById("fanButton").addEventListener("click", function () {
+    toggleDevice("fan");
+});
+
+document.getElementById("ledButton").addEventListener("click", function () {
+    toggleDevice("led");
+});
+
+document.getElementById("acButton").addEventListener("click", function () {
+    toggleDevice("ac");
+});
+
+
 // config biểu đồ
 // data
 const chartData = {
@@ -78,7 +190,6 @@ const config = {
     }
 }
 
-
 // Biểu đồ cảm biến
 const ctx = document.getElementById('sensorChart').getContext('2d');
 const sensorChart = new Chart(ctx, config);
@@ -117,92 +228,57 @@ function updateIcons(temperature, humidity, lightIntensity) {
     }
 }
 
-// Hàm cập nhật dữ liệu mới mỗi 3 giây
-function updateChartData() {
-    const currentTime = new Date().toLocaleTimeString();
-
-    // Giả lập dữ liệu mới
-    const newTemperature = Math.random() * 40; 
-    const newHumidity = Math.random() * 100; 
-    const newLightIntensity = Math.random() * 1000; 
-
-    // Cập nhật chỉ số hiện tại
-    document.getElementById('currentLightIntensity').textContent = `${newLightIntensity.toFixed(2)} lux`;
-    document.getElementById('currentHumidity').textContent = `${newHumidity.toFixed(2)}%`;
-    document.getElementById('currentTemperature').textContent = `${newTemperature.toFixed(2)}°C`;
-
-    // Thêm dữ liệu mới vào biểu đồ
-    sensorChart.data.labels.push(currentTime);
-    sensorChart.data.datasets[0].data.push(newLightIntensity);
-    sensorChart.data.datasets[1].data.push(newHumidity);
-    sensorChart.data.datasets[2].data.push(newTemperature);
-
-    // Giữ cho biểu đồ chỉ hiển thị 10 điểm dữ liệu gần nhất
-    if (sensorChart.data.labels.length > 10) {
-        sensorChart.data.labels.shift();
-        sensorChart.data.datasets.forEach(dataset => dataset.data.shift());
-    }
-    // Cập nhật biểu đồ
-    sensorChart.update();
-    
-    // Thay đổi biểu tượng dựa trên giá trị
-    updateIcons(newTemperature, newHumidity, newLightIntensity);
-}
-
-// Cập nhật dữ liệu mỗi 3 giây
-setInterval(updateChartData, 3000);
-
 // cập nhật icon
-function toggleDevice(button, iconId, onImageSrc, offImageSrc) {
-    const isOn = button.classList.toggle('off');
-    button.textContent = isOn ? 'Tắt' : 'Bật';
+// function toggleDevice(button, iconId, onImageSrc, offImageSrc) {
+//     const isOn = button.classList.toggle('off');
+//     button.textContent = isOn ? 'Tắt' : 'Bật';
 
-    const icon = document.getElementById(iconId);
-    if (isOn) {
-        icon.src = onImageSrc;
-    } else {
-        icon.src = offImageSrc;
-    }
-}
+//     const icon = document.getElementById(iconId);
+//     if (isOn) {
+//         icon.src = onImageSrc;
+//     } else {
+//         icon.src = offImageSrc;
+//     }
+// }
 
 // Gán sự kiện cho các nút thiết bị
 // document.getElementById('fanButton').addEventListener('click', function () {
 //     toggleDevice(this, 'fanIcon', './assets/images/fan-on.gif', './assets/images/fan-off.png');
 // });
 
-document.getElementById('fanButton').addEventListener('click', function() {
-    var fanIcon = document.getElementById('fanIcon');
-    var button = this;
+// document.getElementById('fanButton').addEventListener('click', function() {
+//     var fanIcon = document.getElementById('fanIcon');
+//     var button = this;
 
-    if (fanIcon.classList.contains('rotate')) {
-        fanIcon.classList.remove('rotate');
-        button.textContent = 'Bật';
-        button.classList.remove('off');
-    } else {
-        fanIcon.classList.add('rotate');
-        button.textContent = 'Tắt';
-        button.classList.add('off');
-    }
-});
+//     if (fanIcon.classList.contains('rotate')) {
+//         fanIcon.classList.remove('rotate');
+//         button.textContent = 'Bật';
+//         button.classList.remove('off');
+//     } else {
+//         fanIcon.classList.add('rotate');
+//         button.textContent = 'Tắt';
+//         button.classList.add('off');
+//     }
+// });
 
-document.getElementById('ledButton').addEventListener('click', function () {
-    toggleDevice(this, 'ledIcon', './assets/images/bulb-on.gif', './assets/images/bulb-off.png');
-});
+// document.getElementById('ledButton').addEventListener('click', function () {
+//     toggleDevice(this, 'ledIcon', './assets/images/bulb-on.gif', './assets/images/bulb-off.png');
+// });
 
-document.getElementById('acButton').addEventListener('click', function () {
-    toggleDevice(this, 'acIcon', './assets/images/ac-on.gif', './assets/images/ac-off.png');
-});
+// document.getElementById('acButton').addEventListener('click', function () {
+//     toggleDevice(this, 'acIcon', './assets/images/ac-on.gif', './assets/images/ac-off.png');
+// });
 
 // Sự kiện cho các nút navbar
 document.getElementById('homePage').addEventListener('click', function () {
     window.location.href = 'index.html';
 });
-document.getElementById('airQualityBtn').addEventListener('click', function() {
-    window.location.href = 'statistical.html'; 
+document.getElementById('airQualityBtn').addEventListener('click', function () {
+    window.location.href = 'statistical.html';
 });
 
-document.getElementById('deviceHistoryBtn').addEventListener('click', function() {
-    window.location.href = 'device.html'; 
+document.getElementById('deviceHistoryBtn').addEventListener('click', function () {
+    window.location.href = 'device.html';
 });
 
 document.getElementById('information').addEventListener('click', () => {
