@@ -23,31 +23,19 @@
   <!-- Bộ lọc thời gian và tùy chọn sắp xếp -->
   <div class="filter-find-container">
     <!-- Bộ lọc thời gian -->
-    <div class="filter-container">
+    <!-- <div class="filter-container">
       <label for="startDate">Từ ngày:</label>
       <input type="date" id="startTime">
       <label for="endDate">Đến ngày:</label>
       <input type="date" id="endTime">
       <button id="applyFilter">Lọc</button>
-    </div>
-
-    <!-- Lọc theo thiết bị -->
-    <div class="find-container">
-      <label for="findByDevice">Loại thiết bị:</label>
-      <select id="findByDevice">
-        <option value="none">Tất cả</option>
-        <option value="fan">Quạt</option>
-        <option value="airConditioner">Điều hòa</option>
-        <option value="LED">Đèn LED</option>
-      </select>
-      <button id="applyFind">Tìm kiếm</button>
-    </div>
+    </div> -->
 
     <!-- Tìm kiếm chính xác theo thời gian -->
     <div class="search-container">
       <label for="searchTime">Tìm kiếm:</label>
-      <input type="datetime-local" id="searchTime" step="1"> <!-- step="1" cho phép nhập cả giây -->
-      <button id="searchButton">Tìm kiếm</button>
+      <input type="datetime-local" id="searchTime" placeholder="Nhập thời gian" step="1">
+      <button id="searchButton" onclick="renderPage(1)">Tìm kiếm</button>
     </div>
 
   </div>
@@ -61,7 +49,7 @@
     <table>
       <thead>
         <tr>
-          <th>Số thứ tự</th>
+          <th>ID</th>
           <th>Tên thiết bị</th>
           <th>Trạng thái</th>
           <th>Thời gian</th>
@@ -69,14 +57,14 @@
       </thead>
       <tbody id="device-history"></tbody>
     </table>
-    <div id="pagination" class="pagination">
-      <button id="prev-page" onclick="changePage(-1)">←</button>
-      <div id="page-numbers"></div>
-      <button id="next-page" onclick="changePage(1)">→</button>
+    <div class="pagination" id="pagination">
+      <button id="prevBtn" onclick="renderPage(currentPage - 1)" disabled>&laquo;</button>
+      <span id="pageNumbers"></span>
+      <button id="nextBtn" onclick="renderPage(currentPage + 1)">&raquo;</button>
     </div>
   </div>
 
-  <script src="./js/device.js"></script>
+  <script src="./js/test-device.js"></script>
 </body>
 
 </html>

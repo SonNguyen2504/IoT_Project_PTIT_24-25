@@ -1,18 +1,28 @@
 const mqtt = require('mqtt');
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const WebSocket = require('ws');
 const mongoose = require('mongoose');
+const routes = require('./routes');
 require('dotenv').config();
 
-// Tạo Express app và HTTP server
+
+// Tạo Express app
 const app = express();
+
+// Sử dụng middleware
+app.use(cors()); 
+app.use(express.json());
+routes(app);
+
+// Tạo HTTP server và WebSocket server
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // require model
-const AirQuality = require('./model/AirQuality');
-const DeviceStatus = require('./model/DeviceStatus');
+const AirQuality = require('./models/AirQuality');
+const DeviceStatus = require('./models/DeviceStatus');
 
 // Kết nối MongoDB (MongoDB URI từ Atlas)
 mongoose.connect(process.env.DB_URL)
@@ -20,7 +30,7 @@ mongoose.connect(process.env.DB_URL)
     .catch(err => console.error('Failed to connect to MongoDB:', err));
 
 // Kết nối tới MQTT broker
-const mqttClient = mqtt.connect('mqtt://192.168.51.193:1882', {
+const mqttClient = mqtt.connect('mqtt://192.168.1.7:1882', {
     username: "nguyentruongson",
     password: "b21dccn109"
 });

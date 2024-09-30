@@ -21,36 +21,17 @@
   </div>
 
   <!-- Bộ lọc thời gian và tùy chọn sắp xếp -->
-  <div class="filter-sort-container">
+  <div class="feature-container">
     <!-- Bộ lọc thời gian -->
-    <div class="filter-container">
-      <label for="startDate">Từ ngày:</label>
-      <input type="date" id="startTime">
-      <label for="endDate">Đến ngày:</label>
-      <input type="date" id="endTime">
-      <button id="applyFilter">Lọc</button>
-    </div>
-
-    <!-- Sắp xếp -->
-    <div class="sort-container">
-      <label for="sortBy">Sắp xếp theo:</label>
-      <select id="sortBy">
-        <option value="none">Mặc định</option>
-        <option value="temperatureAsc">Nhiệt độ (Tăng dần)</option>
-        <option value="temperatureDesc">Nhiệt độ (Giảm dần)</option>
-        <option value="humidityAsc">Độ ẩm (Tăng dần)</option>
-        <option value="humidityDesc">Độ ẩm (Giảm dần)</option>
-        <option value="lightIntensityAsc">Cường độ sáng (Tăng dần)</option>
-        <option value="lightIntensityDesc">Cường độ sáng (Giảm dần)</option>
-      </select>
-      <button id="applySort">Sắp xếp</button>
-    </div>
-
-    <!-- Tìm kiếm chính xác theo thời gian -->
     <div class="search-container">
-      <label for="searchTime">Tìm kiếm:</label>
-      <input type="datetime-local" id="searchTime" step="1"> <!-- step="1" cho phép nhập cả giây -->
-      <button id="searchButton">Tìm kiếm</button>
+      <input type="text" id="searchValue" placeholder="Nhập giá trị tìm kiếm">
+      <select id="searchType">
+        <option value="" disabled selected>Chọn thuộc tính</option>
+        <option value="humidity">Độ ẩm</option>
+        <option value="temperature">Nhiệt độ</option>
+        <option value="lightIntensity">Cường độ ánh sáng</option>
+      </select>
+      <button id="searchButton" onclick="renderPage(1)">Tìm kiếm</button>
     </div>
 
   </div>
@@ -73,14 +54,14 @@
       </thead>
       <tbody id="air-quality-history"></tbody>
     </table>
-    <div id="pagination" class="pagination">
-      <button id="prev-page" onclick="changePage(-1)">←</button>
-      <div id="page-numbers"></div>
-      <button id="next-page" onclick="changePage(1)">→</button>
+    <div class="pagination" id="pagination">
+      <button id="prevBtn" onclick="renderPage(currentPage - 1)" disabled>&laquo;</button>
+      <span id="pageNumbers"></span>
+      <button id="nextBtn" onclick="renderPage(currentPage + 1)">&raquo;</button>
     </div>
   </div>
 
-  <script src="./js/statistical.js"></script>
+  <script src="./js/test.js"></script>
 </body>
 
 </html>

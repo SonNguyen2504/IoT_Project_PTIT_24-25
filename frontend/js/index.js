@@ -9,7 +9,7 @@ socket.onopen = function () {
 // Khi nhận được tin nhắn từ server
 socket.onmessage = function (event) {
     const data = JSON.parse(event.data);  // Dữ liệu từ MQTT broker qua backend
-    
+
     if (data.temperature && data.humidity && data.lightIntensity) {
         const currentTime = new Date().toLocaleTimeString();
 
@@ -39,8 +39,14 @@ socket.onmessage = function (event) {
         // Cập nhật biểu đồ
         sensorChart.update();
 
+        // Lưu dữ liệu vào localStorage
+        saveChartData();
+
         // Thay đổi biểu tượng dựa trên giá trị
         updateIcons(newTemperature, newHumidity, newLightIntensity);
+
+        // Tự động điều khiển thiết bị
+        alertAndControl(newTemperature, newHumidity, newLightIntensity);
     }
 
     // Xử lý cập nhật trạng thái thiết bị (quạt, đèn LED, điều hòa)
@@ -57,6 +63,55 @@ socket.onerror = function (error) {
 
 function isOpen(ws) { return ws.readyState === ws.OPEN }
 
+// Hàm lưu dữ liệu biểu đồ vào localStorage
+function saveChartData() {
+    const chartData = {
+        labels: sensorChart.data.labels,
+        datasets: sensorChart.data.datasets.map(dataset => ({
+            label: dataset.label,
+            data: dataset.data
+        }))
+    };
+    localStorage.setItem('sensorChartData', JSON.stringify(chartData));
+}
+
+// Hàm khôi phục dữ liệu biểu đồ từ localStorage
+function restoreChartData() {
+    const savedData = localStorage.getItem('sensorChartData');
+    if (savedData) {
+        const chartData = JSON.parse(savedData);
+
+        // Khôi phục nhãn
+        sensorChart.data.labels = chartData.labels;
+
+        // Khôi phục dữ liệu cho từng dataset
+        sensorChart.data.datasets[0].data = chartData.datasets[0].data; // Cường độ sáng
+        sensorChart.data.datasets[1].data = chartData.datasets[1].data; // Độ ẩm
+        sensorChart.data.datasets[2].data = chartData.datasets[2].data; // Nhiệt độ
+
+        // Cập nhật biểu đồ với dữ liệu đã khôi phục
+        sensorChart.update();
+    }
+}
+
+// Hàm khôi phục trạng thái thiết bị từ localStorage
+function restoreDeviceStates() {
+    const devices = ['fan', 'led', 'ac'];  // Danh sách các thiết bị
+
+    devices.forEach(device => {
+        const state = localStorage.getItem(device);
+        if (state) {
+            updateDeviceStatus(device, state);  // Cập nhật trạng thái thiết bị
+        }
+    });
+}
+
+// Gọi hàm khôi phục trạng thái khi trang được tải
+window.onload = function () {
+    restoreChartData();
+    restoreDeviceStates();
+};
+
 // -----------------------------------------------------------
 // Gửi lệnh bật/tắt thiết bị tới WebSocket server
 function toggleDevice(device) {
@@ -69,18 +124,49 @@ function toggleDevice(device) {
         action: action
     });
 
-    if (button.textContent === "Bật") {
-        button.textContent = "Tắt";
-        button.classList.add('off');
-    } else {
-        button.textContent = "Bật";
-        button.classList.remove('off');
-    }
+    console.log(`Sent control message: ${message}`);
+
+    if (!isOpen(socket)) return;
+    socket.send(message);  // Gửi lệnh qua WebSocket
+}
+
+function autoToggleDevice(device) {
+    const button = document.getElementById(`${device}Button`);
+
+    const message = JSON.stringify({
+        device: device,
+        action: "ON"
+    });
+
+    button.textContent = "Tắt";
+    button.classList.add('off');
 
     console.log(`Sent control message: ${message}`);
 
     if (!isOpen(socket)) return;
     socket.send(message);  // Gửi lệnh qua WebSocket
+}
+
+function alertAndControl(temperature, humidity, lightIntensity) {
+    const fanButton = document.getElementById('fanButton');
+    const acButton = document.getElementById('acButton');
+    const ledButton = document.getElementById('ledButton');
+
+    // Tự động bật/tắt thiết bị dựa trên giá trị cảm biến
+    if (temperature > 40 && fanButton.textContent === "Bật") {
+        alert("Nhiệt độ quá cao, quạt đã được bật tự động");
+        autoToggleDevice("fan");
+    }
+
+    if (humidity > 90 && acButton.textContent === "Bật") {
+        alert("Độ ẩm quá cao, điều hòa đã được bật tự động");
+        toggleDevice("ac");
+    }
+
+    if (lightIntensity < 35 && ledButton.textContent === "Bật") {
+        alert("Cường độ sáng quá thấp, đèn LED đã được bật tự động");
+        toggleDevice("led");
+    }
 }
 
 // Cập nhật trạng thái thiết bị (thay đổi icon và nút)
@@ -91,8 +177,14 @@ function updateDeviceStatus(device, status) {
 
     if (status === "ON") {
         icon.src = `./assets/images/${device}-on.gif`;  // Ảnh động khi thiết bị bật
+        button.textContent = "Tắt";
+        button.classList.add('off');
+        localStorage.setItem(device, "ON");
     } else {
         icon.src = `./assets/images/${device}-off.png`;  // Ảnh tĩnh khi thiết bị tắt
+        button.textContent = "Bật";
+        button.classList.remove('off');
+        localStorage.setItem(device, "OFF");
     }
 }
 
@@ -148,7 +240,7 @@ const config = {
     data: chartData,
     options: {
         reponsive: true,
-        maintainAspectRatio: false, 
+        maintainAspectRatio: false,
         scales: {
             x: {
                 title: {

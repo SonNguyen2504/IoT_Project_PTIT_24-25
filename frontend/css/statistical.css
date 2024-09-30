@@ -135,7 +135,7 @@ table td:last-child {
 }
 
 /* Khối chứa các chức năng lọc, tìm kiếm và sắp xếp */
-.filter-sort-container {
+.feature-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -155,16 +155,12 @@ table td:last-child {
     margin-right: 20px;
 }
 
-.filter-container,
-.sort-container,
 .search-container {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
 
-.filter-container label,
-.sort-container label,
 .search-container label {
     margin-right: 10px;
     font-weight: bold;
@@ -172,9 +168,8 @@ table td:last-child {
     font-size: 16px;
 }
 
-.filter-container input,
-.sort-container select,
-.search-container input {
+.search-container input,
+.search-container select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -182,17 +177,10 @@ table td:last-child {
     font-size: 16px;
 }
 
-.filter-container input,
 .search-container input {
     width: 240px;
 }
 
-.sort-container select {
-    width: 220px;
-}
-
-#applyFilter,
-#applySort,
 #searchButton {
     padding: 8px 20px;
     border: none;
@@ -205,8 +193,6 @@ table td:last-child {
     transition: background-color 0.3s;
 }
 
-#applyFilter:hover,
-#applySort:hover,
 #searchButton:hover {
     background-color: #0056b3;
 }
