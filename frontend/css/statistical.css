@@ -217,12 +217,12 @@ table td:last-child {
     }
 
     .container {
-        width: 100%;
+        width: 95%;
         padding: 20px;
         margin: 10px 0;
     }
 
-    .filter-sort-container {
+    .feature-container {
         flex-direction: column;
         align-items: flex-start;
         padding: 15px;
@@ -272,7 +272,7 @@ table td:last-child {
         font-size: 22px;
     }
 
-    .filter-sort-container {
+    .feature-container {
         padding: 15px;
     }
 
@@ -287,5 +287,35 @@ table td:last-child {
 
     table th, table td {
         padding: 14px;
+    }
+}
+
+/* Large Mobile Devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 15px;
+    }
+
+    .navbar .nav-buttons button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .header-title h2 {
+        font-size: 20px;
+    }
+
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    table th, table td {
+        font-size: 12px;
+    }
+
+    #searchButton {
+        width: 100%;
+        padding: 10px;
     }
 }

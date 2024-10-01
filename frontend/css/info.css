@@ -49,6 +49,8 @@ body {
     align-items: center;
     justify-content: center;
     margin-top: 100px;
+    flex-wrap: wrap; /* Cho phép nội dung tự động xuống dòng */
+    padding: 20px;
 }
 
 .profile-pic {
@@ -56,9 +58,58 @@ body {
     height: 450px;
     border-radius: 50%;
     margin-right: 100px; /* Tăng khoảng cách giữa ảnh và thông tin cá nhân */
+    object-fit: cover; /* Giữ tỷ lệ ảnh */
+}
+
+.basic-info {
+    max-width: 600px; /* Giới hạn chiều rộng của thông tin cơ bản */
+    text-align: left; /* Căn trái cho văn bản */
 }
 
 .basic-info p {
     margin: 5px 0;
+    font-size: 18px; /* Kích thước chữ lớn hơn cho dễ đọc */
+    color: #333; /* Màu chữ tối hơn */
 }
 
+/* Media Queries for Responsive Design */
+
+/* Mobile Devices (max-width: 768px) */
+@media (max-width: 768px) {
+    .info-container {
+        flex-direction: column; /* Đặt các phần tử theo chiều dọc trên thiết bị di động */
+        align-items: center; /* Căn giữa các phần tử */
+    }
+
+    .profile-pic {
+        width: 80%; /* Chiều rộng hình ảnh chiếm 80% trên màn hình nhỏ */
+        height: auto; /* Để chiều cao tự động */
+        margin-right: 0; /* Xóa khoảng cách bên phải */
+        margin-bottom: 20px; /* Thêm khoảng cách dưới hình ảnh */
+    }
+
+    .basic-info {
+        text-align: center; /* Căn giữa văn bản trên màn hình nhỏ */
+        width: 100%; /* Chiếm toàn bộ chiều rộng */
+    }
+
+    .basic-info p {
+        font-size: 16px; /* Giảm kích thước chữ cho thiết bị nhỏ */
+    }
+}
+
+/* Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .profile-pic {
+        width: 250px; /* Giảm kích thước hình ảnh cho máy tính bảng */
+        height: auto; /* Để chiều cao tự động */
+    }
+
+    .basic-info {
+        max-width: 90%; /* Giới hạn chiều rộng thông tin cơ bản */
+    }
+
+    .basic-info p {
+        font-size: 17px; /* Điều chỉnh kích thước chữ */
+    }
+}

@@ -51,6 +51,7 @@ body {
     padding: 15px;
     background-color: #f1f1f1;
     border-bottom: 1px solid #ddd;
+    flex-wrap: wrap; /* Cho phép hiển thị linh hoạt */
 }
 
 .current-stats .stat-item {
@@ -62,6 +63,7 @@ body {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px; /* Thêm khoảng cách giữa các phần tử */
 }
 
 .current-stats .stat-item h2 {
@@ -89,6 +91,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     padding: 20px;
+    flex-wrap: wrap; /* Cho phép hiển thị linh hoạt */
 }
 
 #chartContainer {
@@ -123,7 +126,7 @@ body {
 .device img {
     width: 50px;
     height: 50px;
-    margin-right: 250px;
+    margin-right: 10px; /* Giảm khoảng cách */
 }
 
 .rotate {
@@ -152,4 +155,64 @@ body {
 
 .toggle-button.off {
     background-color: #f44336;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar .nav-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .current-stats .stat-item {
+        width: 100%; /* Đặt chiều rộng 100% */
+    }
+
+    #chartContainer,
+    #deviceControl {
+        width: 100%; /* Đặt chiều rộng 100% */
+        height: auto; /* Đặt chiều cao tự động */
+    }
+
+    .main-content {
+        flex-direction: column; /* Đặt chiều hướng thành cột */
+    }
+
+    .device {
+        flex-direction: column; /* Đặt chiều hướng thành cột */
+        align-items: flex-start; /* Căn trái */
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar h1 {
+        font-size: 20px; /* Giảm kích thước chữ */
+    }
+
+    .navbar .nav-buttons button {
+        font-size: 14px; /* Giảm kích thước nút */
+        padding: 8px 16px; /* Giảm khoảng cách nút */
+    }
+
+    .current-stats .stat-item h2 {
+        font-size: 20px; /* Giảm kích thước chữ */
+    }
+
+    .current-stats .stat-item p {
+        font-size: 16px; /* Giảm kích thước chữ */
+    }
+
+    .device h3 {
+        font-size: 16px; /* Giảm kích thước chữ */
+    }
+
+    .toggle-button {
+        padding: 8px 16px; /* Giảm khoảng cách nút */
+        font-size: 14px; /* Giảm kích thước nút */
+    }
 }
