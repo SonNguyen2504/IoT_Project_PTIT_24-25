@@ -1,229 +1,104 @@
-let deviceHistoryFiltered = []; // Mảng dữ liệu đã lọc
-let dataRendered = [];
-let currentPage = 0; // Trang hiện tại
-let totalPages = 0; // Tổng số trangg sau khi lọc
+let currentPage = 1; // Trang hiện tại
+let totalPages = 0; // Tổng số trang sau khi lọc
+let limit = 10; // Số lượng bản ghi mỗi trang
 
+// Hàm hiển thị dữ liệu theo trang
+const renderPage = async (page) => {
+    try {
+        const searchTime = document.getElementById('searchTime').value;
 
-// Tạo dữ liệu mẫu cho lịch sử thiết bị với 3 thiết bị cụ thể: Quạt, Điều hòa, và Đèn LED
-let deviceHistory = Array.from({ length: 100 }, (_, i) => {
-    const deviceNames = ['Quạt', 'Điều hòa', 'Đèn LED'];
-    return {
-        name: deviceNames[i % 3],
-        time: new Date(Date.now() - Math.floor(Math.random() * 1e9)).toISOString(),
-        status: Math.random() > 0.5 ? 'Bật' : 'Tắt'
-    };
-});
+        const params = new URLSearchParams({
+            page,
+            limit
+        });
 
+        // Chỉ thêm thời gian nếu được nhập
+        if (searchTime) {
+            params.append('searchTime', new Date(searchTime).toISOString());
+        }
 
-// Hàm phân trang
-function paginate(items, itemsPerPage) {
-    const pages = [];
-    for (let i = 0; i < items.length; i += itemsPerPage) {
-        pages.push(items.slice(i, i + itemsPerPage));
+        const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
+        const data = await response.json();
+
+        const tbody = document.getElementById('device-history');
+        tbody.innerHTML = '';
+
+        data.deviceStatusData.forEach(item => {
+            let nameDevice;
+            if (item.device === 'led') nameDevice = 'LED';
+            else if (item.device === 'fan') nameDevice = 'Quạt';
+            else if (item.device === 'ac') nameDevice = 'Điều hòa';
+            const row = `<tr>
+                    <td>${item._id}</td>
+                    <td>${nameDevice}</td>
+                    <td>${item.status}</td>
+                    <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
+                </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        currentPage = page;
+        totalPages = data.totalPages; // Cập nhật tổng số trang
+        renderPagination(totalPages);
+    } catch (error) {
+        console.error("Error fetching data:", error);
     }
-    return pages;
 }
 
+// Hàm cập nhật kích thước trang
+function updatePageSize() {
+    limit = parseInt(document.getElementById('pageSize').value);
+    currentPage = 1; // Reset về trang 1 khi thay đổi kích thước
+    renderPage(currentPage); // Gọi lại hàm renderPage với trang 1
+}
 
-// Hiển thị dữ liệu và phân trang
-function renderPage(pageNumber) {
-    const itemsPerPage = 10; // 10 dữ liệu mỗi trang
-    dataRendered = deviceHistoryFiltered.length > 0 ? deviceHistoryFiltered : deviceHistory;
-    const pagedHistory = paginate(dataRendered, itemsPerPage);
-
-    // console.log(deviceHistoryFiltered, deviceHistory);
-
-    totalPages = pagedHistory.length; // cập nhật tổng số trang 
-
-    const deviceHistoryTable = document.getElementById('device-history');
-    const pageNumbers = document.getElementById('page-numbers');
-
-    // Hiển thị dữ liệu trong bảng
-    deviceHistoryTable.innerHTML = '';
-    pagedHistory[pageNumber].forEach((device, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-                    <td>${pageNumber * itemsPerPage + index + 1}</td>
-                    <td>${device.name}</td>
-                    <td>${device.status}</td>
-                    <td>${new Date(device.time).toLocaleString('vi-VN')}</td>
-                `;
-        deviceHistoryTable.appendChild(tr);
-    });
-
-    // Hiển thị số trang với ... ngăn cách
-    const maxPageButtons = 4;
-
+// Cập nhật hàm phân trang
+function renderPagination(totalPages) {
+    const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
 
-    function createPageButton(i, isCurrent = false) {
-        const button = document.createElement('button');
-        button.textContent = i + 1;
-        button.className = isCurrent ? 'active' : '';
-        button.addEventListener('click', () => renderPage(i));
-        pageNumbers.appendChild(button);
+    const maxButtons = 3; // Số trang hiển thị ở mỗi bên
+    let startPage = Math.max(1, currentPage - maxButtons);
+    let endPage = Math.min(totalPages, currentPage + maxButtons);
+
+    if (currentPage > maxButtons + 1) {
+        pageNumbers.innerHTML += `<button onclick="renderPage(1)">1</button>`;
+        if (currentPage > maxButtons + 2) {
+            pageNumbers.innerHTML += `<span>...</span>`;
+        }
     }
 
-    if (totalPages <= maxPageButtons + 2) {
-        for (let i = 0; i < totalPages; i++) {
-            createPageButton(i, i === pageNumber);
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        pageNumbers.innerHTML += `<button class="${activeClass}" onclick="renderPage(${i})">${i}</button>`;
+    }
+
+    if (currentPage < totalPages - maxButtons) {
+        if (currentPage < totalPages - maxButtons - 1) {
+            pageNumbers.innerHTML += `<span>...</span>`;
         }
-    } else {
-        if (pageNumber < maxPageButtons - 1) {
-            for (let i = 0; i < maxPageButtons; i++) {
-                createPageButton(i, i === pageNumber);
-            }
-            pageNumbers.appendChild(document.createTextNode('...'));
-            createPageButton(totalPages - 1);
-        } else if (pageNumber >= totalPages - maxPageButtons + 1) {
-            createPageButton(0);
-            pageNumbers.appendChild(document.createTextNode('...'));
-            for (let i = totalPages - maxPageButtons; i < totalPages; i++) {
-                createPageButton(i, i === pageNumber);
-            }
+        pageNumbers.innerHTML += `<button onclick="renderPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    // Cập nhật trạng thái của nút phân trang
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('nextBtn').disabled = currentPage === totalPages;
+
+    // Thay đổi màu nền cho nút trang hiện tại
+    const buttons = pageNumbers.getElementsByTagName('button');
+    for (let button of buttons) {
+        if (button.innerText == currentPage) {
+            button.style.backgroundColor = '#007bff';
+            button.style.color = '#fff';
         } else {
-            createPageButton(0);
-            pageNumbers.appendChild(document.createTextNode('...'));
-            for (let i = pageNumber - 2; i <= pageNumber + 1; i++) {
-                createPageButton(i, i === pageNumber);
-            }
-            if (pageNumber + 1 < totalPages - 2) {
-                pageNumbers.appendChild(document.createTextNode('...'));
-            }
-            createPageButton(totalPages - 1);
+            button.style.backgroundColor = '';
+            button.style.color = '';
         }
     }
-
-    // Cập nhật trạng thái nút mũi tên
-    currentPage = pageNumber;
-    document.getElementById('prev-page').disabled = pageNumber === 0;
-    document.getElementById('next-page').disabled = pageNumber === totalPages - 1;
 }
 
-// Chuyển đổi trang
-function changePage(direction) {
-    const newPage = currentPage + direction;
-    if (newPage >= 0 && newPage < totalPages) {
-        renderPage(newPage);
-    }
-}
-
-// Hàm lọc dữ liệu theo thời gian để hiển thị
-function filterDataByDay() {
-    const startTimeInput = document.getElementById('startTime');
-    const endTimeInput = document.getElementById('endTime');
-
-    const startTime = new Date(startTimeInput.value).setHours(0, 0, 0, 0);
-    const endTime = new Date(endTimeInput.value).setHours(23, 59, 59, 999);
-
-    // Kiểm tra nếu ngày bắt đầu hoặc kết thúc bị để trống
-    if (!startTimeInput.value || !endTimeInput.value) {
-        alert("Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.");
-        return;
-    }
-
-    // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
-    if (startTime > endTime) {
-        alert("Ngày bắt đầu không thể lớn hơn ngày kết thúc.");
-        return;
-    }
-
-    deviceHistoryFiltered = deviceHistory.filter(data => {
-        const time = new Date(data.time);
-        return time >= startTime && time <= endTime;
-    });
-
-    // Kiểm tra nếu không có dữ liệu phù hợp
-    if (deviceHistoryFiltered.length === 0) {
-        alert("Không có dữ liệu nào phù hợp với khoảng thời gian bạn đã chọn.");
-    }
-
-    document.getElementById('findByDevice').value = 'none'
-
-    renderPage(0); // Hiển thị lại từ trang đầu sau khi lọc
-}
-
-// Hàm lọc mảng dữ liệu theo ngày dùng cho tìm thiết bị
-function findByDay(start, end) {
-    const startTime = new Date(start);
-    const endTime = new Date(end);
-
-    startTime.setHours(0, 0, 0, 0);
-    endTime.setHours(23, 59, 59, 999);
-
-    return deviceHistory.filter(item => {
-        const time = new Date(item.time);
-        return time >= startTime && time <= endTime;
-    })
-}
-
-function filterDataByDevice() {
-    const option = document.getElementById('findByDevice').value;
-    const start = document.getElementById('startTime').value;
-    const end = document.getElementById('endTime').value;
-
-    let data = []
-
-    if (start && end) {
-        data = findByDay(start, end);
-    }
-    else if ((!start && end) || (start && !end)) {
-        alert('Không được để trống ô nhập ngày tháng');
-        return;
-    }
-    else data = deviceHistory;
-
-    let foundData = [];
-    switch (option) {
-        case 'fan':
-            foundData = data.filter((item) => item.name === 'Quạt');
-            break;
-        case 'airConditioner':
-            foundData = data.filter((item) => item.name === 'Điều hòa');
-            break;
-        case 'LED':
-            foundData = data.filter((item) => item.name === 'Đèn LED');
-            break;
-        case 'none':
-            foundData = data;
-            break;
-    }
-
-    if (foundData.length === 0) {
-        alert('Không có dữ liệu nào phù hợp.')
-    }
-
-    deviceHistoryFiltered = foundData;
-
-    // console.log(foundData, deviceHistoryFiltered, deviceHistory);
-
-    // render 
-    renderPage(0);
-}
-
-function search() {
-    const searchInput = document.getElementById('searchTime').value;
-
-    if(!searchInput) {
-        alert('Vui lòng nhập thời gia muốn tìm kiếm');
-    }
-
-    let data = deviceHistory.find((item) => {
-        const time = new Date(item.time).toISOString().slice(0, 19);
-        const searchTimeFormated = new Date(searchInput).toISOString().slice(0, 19);
-        return time === searchTimeFormated;
-    })
-
-    deviceHistoryFiltered = new Array(data);
-
-    document.getElementById('findByDevice').value = 'none';
-
-    renderPage(0);
-
-}
-
-// Hiển thị trang đầu tiên
-renderPage(0);
+// Khởi tạo hiển thị trang đầu tiên
+renderPage(currentPage);
 
 // Sự kiện cho các nút navbar
 document.getElementById('homePage').addEventListener('click', function () {
@@ -234,19 +109,10 @@ document.getElementById('airQualityBtn').addEventListener('click', function () {
     window.location.href = 'statistical.html';
 });
 
-document.getElementById('deviceHistoryBtn').addEventListener('click', () => {
+document.getElementById('deviceHistoryBtn').addEventListener('click', function () {
     window.location.href = 'device.html';
-})
+});
 
 document.getElementById('information').addEventListener('click', () => {
     window.location.href = 'info.html';
-})
-
-// Sự kiện Filter
-document.getElementById('applyFilter').addEventListener('click', filterDataByDay);
-
-// Sự kiện tìm theo thiết bị
-document.getElementById('applyFind').addEventListener('click', filterDataByDevice);
-
-// Sự kiện search theo ngày
-document.getElementById('searchButton').addEventListener('click', search);
+});

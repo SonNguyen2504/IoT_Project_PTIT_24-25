@@ -1,18 +1,15 @@
 let currentPage = 1; // Trang hiện tại
 let totalPages = 0; // Tổng số trang sau khi lọc
-
-const limit = 10; // Số lượng bản ghi mỗi trang
+let limit = 10; // Số lượng bản ghi mỗi trang
 
 // Hàm hiển thị dữ liệu theo trang
 const renderPage = async (page) => {
     try {
         const searchTime = document.getElementById('searchTime').value;
 
-        console.log(searchTime);
-
         const params = new URLSearchParams({
             page,
-            limit: 10
+            limit
         });
 
         // Chỉ thêm thời gian nếu được nhập
@@ -22,8 +19,6 @@ const renderPage = async (page) => {
 
         const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
         const data = await response.json();
-
-        console.log(data);
 
         const tbody = document.getElementById('device-history');
         tbody.innerHTML = '';
@@ -43,12 +38,21 @@ const renderPage = async (page) => {
         });
 
         currentPage = page;
-        renderPagination(data.totalPages);
+        totalPages = data.totalPages; // Cập nhật tổng số trang
+        renderPagination(totalPages);
     } catch (error) {
         console.error("Error fetching data:", error);
     }
 }
 
+// Hàm cập nhật kích thước trang
+function updatePageSize() {
+    limit = parseInt(document.getElementById('pageSize').value);
+    currentPage = 1; // Reset về trang 1 khi thay đổi kích thước
+    renderPage(currentPage); // Gọi lại hàm renderPage với trang 1
+}
+
+// Cập nhật hàm phân trang
 function renderPagination(totalPages) {
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
@@ -111,4 +115,4 @@ document.getElementById('deviceHistoryBtn').addEventListener('click', function (
 
 document.getElementById('information').addEventListener('click', () => {
     window.location.href = 'info.html';
-})
+});

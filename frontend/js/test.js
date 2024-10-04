@@ -1,7 +1,13 @@
 let currentPage = 1; // Trang hiện tại
 let totalPages = 0; // Tổng số trang sau khi lọc
+let limit = 10; // Số lượng bản ghi mỗi trang
 
-const limit = 10; // Số lượng bản ghi mỗi trang
+// Hàm cập nhật kích thước trang
+function updatePageSize() {
+    limit = parseInt(document.getElementById('pageSize').value);
+    currentPage = 1; // Reset về trang 1 khi thay đổi kích thước
+    renderPage(currentPage); // Gọi lại hàm renderPage với trang 1
+}
 
 // Hàm hiển thị dữ liệu theo trang
 const renderPage = async (page) => {
@@ -9,7 +15,7 @@ const renderPage = async (page) => {
         const searchValue = document.getElementById('searchValue').value;
         const searchType = document.getElementById('searchType').value;
 
-        const response = await fetch(`http://localhost:3000/api/air-quality?page=${page}&limit=10&searchValue=${searchValue}&searchType=${searchType}`);
+        const response = await fetch(`http://localhost:3000/api/air-quality?page=${page}&limit=${limit}&searchValue=${searchValue}&searchType=${searchType}`);
         const data = await response.json();
 
         const tbody = document.getElementById('air-quality-history');
@@ -27,12 +33,14 @@ const renderPage = async (page) => {
         });
 
         currentPage = page;
-        renderPagination(data.totalPages);
+        totalPages = data.totalPages; // Cập nhật tổng số trang
+        renderPagination(totalPages);
     } catch (error) {
         console.error("Error fetching data:", error);
     }
 }
 
+// Cập nhật hàm phân trang
 function renderPagination(totalPages) {
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
@@ -95,4 +103,4 @@ document.getElementById('deviceHistoryBtn').addEventListener('click', function (
 
 document.getElementById('information').addEventListener('click', () => {
     window.location.href = 'info.html';
-})
+});
