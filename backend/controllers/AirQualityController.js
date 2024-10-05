@@ -1,16 +1,37 @@
 const AirQuality = require('../models/AirQuality');
 
+const getAllAirQuality = async (req, res) => { 
+    try {
+        const airQualityData = await AirQuality.find();
+        const totalDocuments = await AirQuality.countDocuments();
+        res.json({
+            airQualityData,
+            totalDocuments,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }  
+}
+
 const getAirQuality = async (req, res) => {
-    const { page = 1, limit = 10, searchValue, searchType } = req.query;
+    const { page = 1, limit, searchValue, searchType, sortField, sortOrder } = req.query;
     
     let query = {};
     if (searchValue && searchType) {
         query[searchType] = searchValue;
     }
 
+    // Xác định thứ tự sắp xếp
+    const sortOptions = {};
+    if (sortField) {
+        sortOptions[sortField] = sortOrder === 'desc' ? -1 : 1; // -1 cho giảm dần, 1 cho tăng dần
+    } else {
+        sortOptions.time = -1; // Sắp xếp theo thời gian mặc định
+    }
+
     try {
         const airQualityData = await AirQuality.find(query)
-            .sort({ time: -1 })
+            .sort(sortOptions)
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec();
@@ -18,6 +39,7 @@ const getAirQuality = async (req, res) => {
 
         res.json({
             airQualityData,
+            totalDocuments: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
         });
@@ -26,4 +48,4 @@ const getAirQuality = async (req, res) => {
     }
 }
 
-module.exports = { getAirQuality };
+module.exports = { getAirQuality, getAllAirQuality };

@@ -1,13 +1,26 @@
 const DeviceStatus = require('../models/DeviceStatus');
 
+const getAllDeviceStatus = async (req, res) => {
+    try {
+        const deviceStatusData = await DeviceStatus.find();
+        const totalDocuments = await DeviceStatus.countDocuments();
+        res.json({
+            deviceStatusData, 
+            totalDocuments,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const getDeviceStatus = async (req, res) => {
     const { page = 1, limit = 10, searchTime } = req.query;
 
     let query = {};
     if (searchTime) {
-        query.time = { $eq: new Date(searchTime)};
+        query.time = { $eq: new Date(searchTime) };
     }
-    
+
     try {
         const deviceStatusData = await DeviceStatus.find(query)
             .sort({ time: -1 })
@@ -18,6 +31,7 @@ const getDeviceStatus = async (req, res) => {
 
         res.json({
             deviceStatusData,
+            totalDocuments: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
         });
@@ -26,4 +40,4 @@ const getDeviceStatus = async (req, res) => {
     }
 }
 
-module.exports = { getDeviceStatus };
+module.exports = { getDeviceStatus, getAllDeviceStatus };
