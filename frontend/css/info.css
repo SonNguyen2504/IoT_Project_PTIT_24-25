@@ -46,22 +46,32 @@ body {
 /* Khối thông tin */
 .info-container {
     display: flex;
-    align-items: center;
     justify-content: center;
     margin-top: 100px;
-    flex-wrap: wrap; /* Cho phép nội dung tự động xuống dòng */
     padding: 20px;
 }
 
+.profile-info {
+    display: flex; /* Đặt ảnh và thông tin bên cạnh nhau */
+    align-items: flex-start;
+    border: 1px solid #ccc; /* Viền khung */
+    border-radius: 10px; /* Bo góc */
+    padding: 20px; /* Khoảng cách bên trong khung */
+    background-color: #fff; /* Màu nền khung */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
 .profile-pic {
-    width: 300px;
-    height: 450px;
+    width: 200px; /* Giảm kích thước ảnh */
+    height: auto; /* Để chiều cao tự động */
     border-radius: 50%;
-    margin-right: 100px; /* Tăng khoảng cách giữa ảnh và thông tin cá nhân */
+    margin-right: 40px; /* Tăng khoảng cách giữa ảnh và thông tin */
     object-fit: cover; /* Giữ tỷ lệ ảnh */
 }
 
 .basic-info {
+    display: flex;
+    flex-direction: column; /* Đặt các phần tử theo chiều dọc */
     max-width: 600px; /* Giới hạn chiều rộng của thông tin cơ bản */
     text-align: left; /* Căn trái cho văn bản */
 }
@@ -73,23 +83,25 @@ body {
 }
 
 /* Media Queries for Responsive Design */
-
-/* Mobile Devices (max-width: 768px) */
 @media (max-width: 768px) {
     .info-container {
         flex-direction: column; /* Đặt các phần tử theo chiều dọc trên thiết bị di động */
         align-items: center; /* Căn giữa các phần tử */
     }
 
+    .profile-info {
+        flex-direction: column; /* Đặt ảnh và thông tin theo chiều dọc */
+        align-items: center; /* Căn giữa các phần tử */
+    }
+
     .profile-pic {
         width: 80%; /* Chiều rộng hình ảnh chiếm 80% trên màn hình nhỏ */
-        height: auto; /* Để chiều cao tự động */
         margin-right: 0; /* Xóa khoảng cách bên phải */
         margin-bottom: 20px; /* Thêm khoảng cách dưới hình ảnh */
     }
 
     .basic-info {
-        text-align: center; /* Căn giữa văn bản trên màn hình nhỏ */
+        text-align: left; /* Căn trái văn bản trên màn hình nhỏ */
         width: 100%; /* Chiếm toàn bộ chiều rộng */
     }
 
@@ -98,10 +110,9 @@ body {
     }
 }
 
-/* Tablets (max-width: 1024px) */
 @media (max-width: 1024px) {
     .profile-pic {
-        width: 250px; /* Giảm kích thước hình ảnh cho máy tính bảng */
+        width: 180px; /* Giảm kích thước hình ảnh cho máy tính bảng */
         height: auto; /* Để chiều cao tự động */
     }
 
@@ -112,4 +123,4 @@ body {
     .basic-info p {
         font-size: 17px; /* Điều chỉnh kích thước chữ */
     }
-}
+}   

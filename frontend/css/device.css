@@ -134,6 +134,36 @@ table td:last-child {
     color: #fff;
 }
 
+/* CSS cho phần chọn kích thước trang */
+.page-size-container {
+    display: flex; /* Sử dụng flexbox để căn chỉnh */
+    align-items: center; /* Căn giữa theo phương dọc */
+    margin-top: 10px; /* Khoảng cách trên */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+}
+
+.page-size-container label {
+    margin-right: 10px; /* Khoảng cách bên phải cho nhãn */
+    font-weight: bold; /* Đậm cho nhãn */
+}
+
+.page-size-container select {
+    padding: 5px; /* Padding cho dropdown */
+    border: 1px solid #007bff; /* Đường viền */
+    border-radius: 4px; /* Bo tròn góc */
+    background-color: #f8f9fa; /* Màu nền */
+    transition: border-color 0.3s; /* Hiệu ứng chuyển màu viền */
+}
+
+.page-size-container select:hover {
+    border-color: #0056b3; /* Màu viền khi hover */
+}
+
+.page-size-container select:focus {
+    outline: none; /* Bỏ viền mặc định */
+    border-color: #0056b3; /* Màu viền khi focus */
+}
+
 /* Khối chứa các chức năng lọc, tìm kiếm và sắp xếp */
 .filter-find-container {
     display: flex;

@@ -22,15 +22,6 @@
 
   <!-- Bộ lọc thời gian và tùy chọn sắp xếp -->
   <div class="filter-find-container">
-    <!-- Bộ lọc thời gian -->
-    <!-- <div class="filter-container">
-      <label for="startDate">Từ ngày:</label>
-      <input type="date" id="startTime">
-      <label for="endDate">Đến ngày:</label>
-      <input type="date" id="endTime">
-      <button id="applyFilter">Lọc</button>
-    </div> -->
-
     <!-- Tìm kiếm chính xác theo thời gian -->
     <div class="search-container">
       <label for="searchTime">Tìm kiếm:</label>
@@ -38,6 +29,15 @@
       <button id="searchButton" onclick="renderPage(1)">Tìm kiếm</button>
     </div>
 
+    <!-- Khung chọn kích thước trang -->
+    <div class="page-size-container">
+      <label for="pageSize">Chọn kích thước trang:</label>
+      <select id="pageSize" onchange="updatePageSize()">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
   </div>
 
   <!-- Tiêu đề -->
@@ -64,7 +64,7 @@
     </div>
   </div>
 
-  <script src="./js/test-device.js"></script>
+  <script src="./js/device.js"></script>
 </body>
 
 </html>

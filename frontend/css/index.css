@@ -157,6 +157,12 @@ body {
     background-color: #f44336;
 }
 
+.loading {
+    background-color: gray; /* Change background color to gray */
+    color: white; /* Change text color to white */
+    cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     .navbar {
