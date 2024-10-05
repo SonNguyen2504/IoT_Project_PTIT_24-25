@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const AutoIncreament = require('mongoose-sequence')(mongoose);
 
 const airQualitySchema = new mongoose.Schema({
     humidity: Number,
@@ -9,6 +10,8 @@ const airQualitySchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+airQualitySchema.plugin(AutoIncreament, {inc_field: 'airQualityId'});
 
 const AirQuality = mongoose.model('AirQuality', airQualitySchema);
 

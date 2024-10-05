@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const AutoIncreament = require('mongoose-sequence')(mongoose);
 
 const deviceStatusSchema = new mongoose.Schema({
     device: String,
@@ -12,6 +13,8 @@ const deviceStatusSchema = new mongoose.Schema({
         },
     }
 });
+
+deviceStatusSchema.plugin(AutoIncreament, {inc_field: 'deviceId'});
 
 const DeviceStatus = mongoose.model('DeviceStatus', deviceStatusSchema);
 
