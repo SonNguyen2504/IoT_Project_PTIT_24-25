@@ -20,6 +20,8 @@ const renderPage = async (page) => {
         const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
         const data = await response.json();
 
+        console.log('Data:', data);
+
         const tbody = document.getElementById('device-history');
         tbody.innerHTML = '';
 
@@ -29,7 +31,7 @@ const renderPage = async (page) => {
             else if (item.device === 'fan') nameDevice = 'Quạt';
             else if (item.device === 'ac') nameDevice = 'Điều hòa';
             const row = `<tr>
-                    <td>${item._id}</td>
+                    <td>${item.deviceId}</td>
                     <td>${nameDevice}</td>
                     <td>${item.status}</td>
                     <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
@@ -54,6 +56,14 @@ function updatePageSize() {
 
 // Cập nhật hàm phân trang
 function renderPagination(totalPages) {
+    if (totalPages === 0) {
+        alert('Không tìm thấy dữ liệu phù hợp');
+        document.getElementById('pagination').style.display = 'none';
+        return;
+    } else {
+        document.getElementById('pagination').style.display = 'block';
+    }
+
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
 
