@@ -1,6 +1,8 @@
 let currentPage = 1; // Trang hiện tại
 let totalPages = 0; // Tổng số trang sau khi lọc
 let limit = 10; // Số lượng bản ghi mỗi trang
+let sortField = ''; // Trường sắp xếp
+let sortOrder = 'asc'; // Thứ tự sắp xếp
 
 // Hàm cập nhật kích thước trang
 function updatePageSize() {
@@ -9,16 +11,32 @@ function updatePageSize() {
     renderPage(currentPage); // Gọi lại hàm renderPage với trang 1
 }
 
+function sortData(field, order) {
+    sortField = field;
+    sortOrder = order;
+    renderPage(currentPage); // Gọi lại hàm renderPage để cập nhật dữ liệu
+}
+
 // Hàm hiển thị dữ liệu theo trang
 const renderPage = async (page) => {
     try {
         const searchValue = document.getElementById('searchValue').value;
         const searchType = document.getElementById('searchType').value;
 
+        if(!Number.isInteger(parseInt(searchValue)) && searchValue) {
+            alert('Vui lòng nhập số nguyên cho trường tìm kiếm');
+            return;
+        }
+
         const params = new URLSearchParams({
             page,
             limit,
         });
+
+        if(sortField && sortOrder) {   
+            params.append('sortField', sortField);
+            params.append('sortOrder', sortOrder);
+        }
 
         if(searchValue && searchType) { 
             params.append('searchValue', searchValue);
@@ -28,12 +46,15 @@ const renderPage = async (page) => {
         const response = await fetch(`http://localhost:3000/api/air-quality?${params.toString()}`);
         const data = await response.json();
 
+        console.log('Data:', data);
+        
+
         const tbody = document.getElementById('air-quality-history');
         tbody.innerHTML = '';
 
         data.airQualityData.forEach(item => {
             const row = `<tr>
-                    <td>${item._id}</td>
+                    <td>${item.airQualityId}</td>
                     <td>${item.temperature}</td>
                     <td>${item.humidity}</td>
                     <td>${item.lightIntensity}</td>
@@ -52,6 +73,14 @@ const renderPage = async (page) => {
 
 // Cập nhật hàm phân trang
 function renderPagination(totalPages) {
+    if (totalPages === 0) {
+        alert('Không tìm thấy dữ liệu phù hợp');
+        document.getElementById('pagination').style.display = 'none';
+        return;
+    } else {
+        document.getElementById('pagination').style.display = 'block';
+    }
+
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
 
