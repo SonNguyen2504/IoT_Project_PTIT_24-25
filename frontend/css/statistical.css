@@ -141,6 +141,13 @@ table th {
     padding-right: 40px; /* Khoảng cách bên phải để tránh đè lên */
 }
 
+table th{
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 14px;
+}   
+
 /* Đặt các nút sắp xếp bên cạnh tiêu đề */
 .sort-container {
     display: inline-flex;
