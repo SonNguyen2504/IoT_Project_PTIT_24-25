@@ -7,39 +7,90 @@ const renderPage = async (page) => {
     try {
         const searchTime = document.getElementById('searchTime').value;
 
-        const params = new URLSearchParams({
-            page,
-            limit
-        });
-
-        // Chỉ thêm thời gian nếu được nhập
         if (searchTime) {
-            params.append('searchTime', new Date(searchTime));
-        }
+            const dateParts = searchTime.split(' ');
+            if (dateParts.length !== 2) {
+                alert('Vui lòng nhập đúng định dạng: HH:mm:ss DD/MM/YYYY');
+                return;
+            }
 
-        const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
-        const data = await response.json();
+            const timePart = dateParts[0]; // "HH:mm:ss"
+            const datePart = dateParts[1]; // "DD/MM/YYYY"
 
-        const tbody = document.getElementById('device-history');
-        tbody.innerHTML = '';
+            // Chuyển đổi định dạng từ "DD/MM/YYYY" sang "YYYY-MM-DD"
+            let [day, month, year] = datePart.split('/');
 
-        data.deviceStatusData.forEach(item => {
-            let nameDevice;
-            if (item.device === 'led') nameDevice = 'LED';
-            else if (item.device === 'fan') nameDevice = 'Quạt';
-            else if (item.device === 'ac') nameDevice = 'Điều hòa';
-            const row = `<tr>
-                    <td>${item._id}</td>
+            if (day.length === 1) day = '0' + day;
+            if (month.length === 1) month = '0' + month;
+
+            const formattedDate = `${year}-${month}-${day}T${timePart}`;
+
+            console.log('Formatted date:', new Date(formattedDate).toISOString());
+
+            // Cập nhật params cho thời gian
+            const params = new URLSearchParams({
+                page,
+                limit,
+                searchTime: new Date(formattedDate).toISOString(),
+            });
+
+            const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
+            const data = await response.json();
+
+            console.log('Data:', data);
+
+            const tbody = document.getElementById('device-history');
+            tbody.innerHTML = '';
+
+            data.deviceStatusData.forEach(item => {
+                let nameDevice;
+                if (item.device === 'led') nameDevice = 'LED';
+                else if (item.device === 'fan') nameDevice = 'Quạt';
+                else if (item.device === 'ac') nameDevice = 'Điều hòa';
+                const row = `<tr>
+                    <td>${item.deviceId}</td>
                     <td>${nameDevice}</td>
                     <td>${item.status}</td>
                     <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
                 </tr>`;
-            tbody.innerHTML += row;
-        });
+                tbody.innerHTML += row;
+            });
 
-        currentPage = page;
-        totalPages = data.totalPages; // Cập nhật tổng số trang
-        renderPagination(totalPages);
+            currentPage = page;
+            totalPages = data.totalPages; // Cập nhật tổng số trang
+            renderPagination(totalPages);
+        } else {
+            const params = new URLSearchParams({
+                page,
+                limit,
+            });
+
+            const response = await fetch(`http://localhost:3000/api/device-status?${params.toString()}`);
+            const data = await response.json();
+
+            console.log('Data:', data);
+
+            const tbody = document.getElementById('device-history');
+            tbody.innerHTML = '';
+
+            data.deviceStatusData.forEach(item => {
+                let nameDevice;
+                if (item.device === 'led') nameDevice = 'LED';
+                else if (item.device === 'fan') nameDevice = 'Quạt';
+                else if (item.device === 'ac') nameDevice = 'Điều hòa';
+                const row = `<tr>
+                    <td>${item.deviceId}</td>
+                    <td>${nameDevice}</td>
+                    <td>${item.status}</td>
+                    <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            currentPage = page;
+            totalPages = data.totalPages; // Cập nhật tổng số trang
+            renderPagination(totalPages);
+        }
     } catch (error) {
         console.error("Error fetching data:", error);
     }
@@ -54,6 +105,14 @@ function updatePageSize() {
 
 // Cập nhật hàm phân trang
 function renderPagination(totalPages) {
+    if (totalPages === 0) {
+        alert('Không tìm thấy dữ liệu phù hợp');
+        document.getElementById('pagination').style.display = 'none';
+        return;
+    } else {
+        document.getElementById('pagination').style.display = 'block';
+    }
+
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
 

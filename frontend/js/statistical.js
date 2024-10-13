@@ -23,49 +23,112 @@ const renderPage = async (page) => {
         const searchValue = document.getElementById('searchValue').value;
         const searchType = document.getElementById('searchType').value;
 
-        if(!Number.isInteger(parseInt(searchValue)) && searchValue) {
-            alert('Vui lòng nhập số nguyên cho trường tìm kiếm');
+        if(!searchType && searchValue) {
+            alert('Vui lòng chọn trường cần tìm kiếm');
             return;
         }
 
-        const params = new URLSearchParams({
-            page,
-            limit,
-        });
-
-        if(sortField && sortOrder) {   
-            params.append('sortField', sortField);
-            params.append('sortOrder', sortOrder);
+        if(searchType && !searchValue) {
+            alert('Vui lòng nhập giá trị cần tìm kiếm');
+            return;
         }
 
-        if(searchValue && searchType) { 
-            params.append('searchValue', searchValue);
-            params.append('searchType', searchType);
+        if (searchType === 'time') {
+            const dateParts = searchValue.split(' ');
+            if (dateParts.length !== 2) {
+                alert('Vui lòng nhập đúng định dạng: HH:mm:ss DD/MM/YYYY');
+                return;
+            }
+            const timePart = dateParts[0]; // "HH:mm:ss"
+            const datePart = dateParts[1]; // "DD/MM/YYYY"
+
+            // Chuyển đổi định dạng từ "DD/MM/YYYY" sang "YYYY-MM-DD"
+            let [day, month, year] = datePart.split('/');
+
+            if (day.length === 1) day = '0' + day;
+            if (month.length === 1) month = '0' + month;
+
+            const formattedDate = `${year}-${month}-${day}T${timePart}`;
+
+            console.log('Formatted date:', new Date(formattedDate).toISOString());
+
+            // Cập nhật params cho thời gian
+            const params = new URLSearchParams({
+                page,
+                limit,
+                searchValue: new Date(formattedDate).toISOString(),
+                searchType: 'time'
+            });
+
+            if (sortField && sortOrder) {   
+                params.append('sortField', sortField);
+                params.append('sortOrder', sortOrder);
+            }
+
+            const response = await fetch(`http://localhost:3000/api/air-quality?${params.toString()}`);
+            const data = await response.json();
+
+            console.log('Data:', data);
+
+            const tbody = document.getElementById('air-quality-history');
+            tbody.innerHTML = '';
+
+            data.airQualityData.forEach(item => {
+                const row = `<tr>
+                        <td>${item.airQualityId}</td>
+                        <td>${item.temperature}</td>
+                        <td>${item.humidity}</td>
+                        <td>${item.lightIntensity}</td>
+                        <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            currentPage = page;
+            totalPages = data.totalPages; // Cập nhật tổng số trang
+            renderPagination(totalPages);
+        } else {
+            if(isNaN(searchValue) && searchValue) { 
+                alert('Vui lòng nhập số cho trường này');
+                return;
+            }
+
+            // Xử lý tìm kiếm cho các trường không phải thời gian
+            const params = new URLSearchParams({
+                page,
+                limit,
+                searchValue,
+                searchType
+            });
+
+            if (sortField && sortOrder) {   
+                params.append('sortField', sortField);
+                params.append('sortOrder', sortOrder);
+            }
+
+            const response = await fetch(`http://localhost:3000/api/air-quality?${params.toString()}`);
+            const data = await response.json();
+
+            console.log('Data:', data);
+
+            const tbody = document.getElementById('air-quality-history');
+            tbody.innerHTML = '';
+
+            data.airQualityData.forEach(item => {
+                const row = `<tr>
+                        <td>${item.airQualityId}</td>
+                        <td>${item.temperature}</td>
+                        <td>${item.humidity}</td>
+                        <td>${item.lightIntensity}</td>
+                        <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            currentPage = page;
+            totalPages = data.totalPages; // Cập nhật tổng số trang
+            renderPagination(totalPages);
         }
-
-        const response = await fetch(`http://localhost:3000/api/air-quality?${params.toString()}`);
-        const data = await response.json();
-
-        console.log('Data:', data);
-        
-
-        const tbody = document.getElementById('air-quality-history');
-        tbody.innerHTML = '';
-
-        data.airQualityData.forEach(item => {
-            const row = `<tr>
-                    <td>${item.airQualityId}</td>
-                    <td>${item.temperature}</td>
-                    <td>${item.humidity}</td>
-                    <td>${item.lightIntensity}</td>
-                    <td>${new Date(item.time).toLocaleString('vi-VN')}</td>
-                </tr>`;
-            tbody.innerHTML += row;
-        });
-
-        currentPage = page;
-        totalPages = data.totalPages; // Cập nhật tổng số trang
-        renderPagination(totalPages);
     } catch (error) {
         console.error("Error fetching data:", error);
     }

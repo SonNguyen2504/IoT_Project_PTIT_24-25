@@ -30,6 +30,7 @@
         <option value="humidity">Độ ẩm</option>
         <option value="temperature">Nhiệt độ</option>
         <option value="lightIntensity">Cường độ ánh sáng</option>
+        <option value="time">Thời gian</option> <!-- Thêm tùy chọn cho ngày tháng -->
       </select>
       <button id="searchButton" onclick="renderPage(1)">Tìm kiếm</button>
     </div>
@@ -56,21 +57,21 @@
         <tr>
           <th>ID</th>
           <th>
-            Nhiệt độ (°C) 
+            Nhiệt độ (°C)
             <div class="sort-container">
               <button class="sort-button" onclick="sortData('temperature', 'asc')">↑</button>
               <button class="sort-button" onclick="sortData('temperature', 'desc')">↓</button>
-          </div>
+            </div>
           </th>
           <th>
-            Độ ẩm (%) 
+            Độ ẩm (%)
             <div class="sort-container">
               <button class="sort-button" onclick="sortData('humidity', 'asc')">↑</button>
               <button class="sort-button" onclick="sortData('humidity', 'desc')">↓</button>
             </div>
           </th>
           <th>
-            Cường độ sáng (lux) 
+            Cường độ sáng (lux)
             <div class="sort-container">
               <button class="sort-button" onclick="sortData('lightIntensity', 'asc')">↑</button>
               <button class="sort-button" onclick="sortData('lightIntensity', 'desc')">↓</button>
