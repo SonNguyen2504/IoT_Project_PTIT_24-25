@@ -6,11 +6,7 @@ const deviceStatusSchema = new mongoose.Schema({
     status: String,
     time: {
         type: Date,
-        default: () => {
-            const now = new Date();
-            now.setMilliseconds(0); // Bỏ qua phần millisecond
-            return now;
-        },
+        default: Date.now
     }
 });
 

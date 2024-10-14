@@ -18,7 +18,17 @@ const getDeviceStatus = async (req, res) => {
 
     let query = {};
     if (searchTime) {
-        query.time = { $eq: new Date(searchTime) };
+        const start = new Date(searchTime);
+            const end = new Date(searchTime);
+            start.setMilliseconds(0);
+            start.setSeconds(0);
+            end.setMilliseconds(999);
+            end.setSeconds(59);
+
+            query.time = {
+                $gte: start,
+                $lt: end
+            };
     }
 
     try {
